@@ -42,7 +42,7 @@ export default function SportFilter({ sports, activeSportId }: SportFilterProps)
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
-          {sport.icon_url && (
+          {sport.icon_url ? (
             <div className="w-4 h-4 mr-2 relative">
               <Image
                 src={sport.icon_url}
@@ -50,8 +50,14 @@ export default function SportFilter({ sports, activeSportId }: SportFilterProps)
                 width={16}
                 height={16}
                 className="object-contain"
+                onError={(e) => {
+                  // Replace with fallback if image fails to load
+                  e.currentTarget.style.display = 'none';
+                }}
               />
             </div>
+          ) : (
+            <span className="mr-2 text-xs font-bold">{sport.name.substring(0, 2)}</span>
           )}
           {sport.display_name}
         </Link>

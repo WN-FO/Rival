@@ -27,7 +27,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         {hasGame ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex items-center space-x-2">
-              {homeTeam.logo_url && (
+              {homeTeam.logo_url ? (
                 <div className="w-16 h-16 relative">
                   <Image
                     src={homeTeam.logo_url}
@@ -35,11 +35,19 @@ export default function ArticleCard({ article }: ArticleCardProps) {
                     width={64}
                     height={64}
                     className="object-contain"
+                    onError={(e) => {
+                      // Replace with fallback if image fails to load
+                      e.currentTarget.src = '/placeholder-team.png';
+                    }}
                   />
+                </div>
+              ) : (
+                <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full">
+                  <span className="text-gray-500 font-bold">{homeTeam.abbreviation}</span>
                 </div>
               )}
               <span className="text-2xl font-bold text-gray-700">vs</span>
-              {awayTeam.logo_url && (
+              {awayTeam.logo_url ? (
                 <div className="w-16 h-16 relative">
                   <Image
                     src={awayTeam.logo_url}
@@ -47,14 +55,22 @@ export default function ArticleCard({ article }: ArticleCardProps) {
                     width={64}
                     height={64}
                     className="object-contain"
+                    onError={(e) => {
+                      // Replace with fallback if image fails to load
+                      e.currentTarget.src = '/placeholder-team.png';
+                    }}
                   />
+                </div>
+              ) : (
+                <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full">
+                  <span className="text-gray-500 font-bold">{awayTeam.abbreviation}</span>
                 </div>
               )}
             </div>
           </div>
         ) : (
           // Otherwise, show a sport icon if available
-          sport?.icon_url && (
+          sport?.icon_url ? (
             <div className="absolute inset-0 flex items-center justify-center opacity-20">
               <div className="w-24 h-24 relative">
                 <Image
@@ -63,8 +79,16 @@ export default function ArticleCard({ article }: ArticleCardProps) {
                   width={96}
                   height={96}
                   className="object-contain"
+                  onError={(e) => {
+                    // Replace with fallback if image fails to load
+                    e.currentTarget.src = '/placeholder-sport.png';
+                  }}
                 />
               </div>
+            </div>
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-2xl font-bold text-gray-400">Rival Sports</div>
             </div>
           )
         )}
@@ -101,12 +125,12 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         
         <div className="mt-4 flex items-center">
           <div className="flex-shrink-0">
-            <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
-              <span className="text-white font-semibold">AI</span>
+            <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
+              <span className="text-white font-semibold">RS</span>
             </div>
           </div>
           <div className="ml-3">
-            <p className="text-sm font-medium text-gray-900">RivalAI</p>
+            <p className="text-sm font-medium text-gray-900">Rival Sports</p>
             <div className="flex space-x-1 text-sm text-gray-500">
               <time dateTime={article.published_at}>{timeAgo}</time>
             </div>

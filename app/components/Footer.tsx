@@ -33,9 +33,9 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-12 lg:px-8">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-gray-600">RivalAI</h3>
+            <h3 className="text-sm font-semibold text-gray-600">Rival Sports</h3>
             <p className="text-sm leading-6 text-gray-600">
-              The first fully automatic, AI-driven sports publication and fan-pick platform.
+              Sports content and fan-pick competition platform.
             </p>
             <div className="flex space-x-6">
               <a href="#" className="text-gray-400 hover:text-gray-500">
@@ -95,7 +95,7 @@ export default function Footer() {
         </div>
         <div className="mt-10 border-t border-gray-200 pt-8 sm:mt-8">
           <p className="text-xs leading-5 text-gray-500">
-            &copy; {currentYear} RivalAI. All rights reserved.
+            &copy; {currentYear} Rival Sports. All rights reserved.
           </p>
         </div>
       </div>

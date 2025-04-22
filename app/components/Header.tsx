@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -12,17 +12,28 @@ export default function Header() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  // Add scroll effect for header
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const navigation = [
     { name: 'Home', href: '/' },
-    { name: 'Picks', href: '/picks' },
-    { name: 'Leaderboard', href: '/leaderboard' },
+    { name: 'My Picks', href: '/picks' },
+    { name: 'Leaderboard', href: '/ranks' },
   ]
 
   const userNavigation = [
     { name: 'Profile', href: user ? `/profile/${user.id}` : '#' },
     { name: 'Settings', href: '/settings' },
-    { name: 'Admin', href: '/admin' },
+    { name: 'Admin', href: '/admin', admin: true },
     { name: 'Sign out', onClick: signOut },
   ]
 
@@ -37,20 +48,30 @@ export default function Header() {
     return pathname?.startsWith(path)
   }
 
+  // Show admin link only if user has admin role
+  const filteredUserNav = userNavigation.filter(item => 
+    !item.admin || (profile?.is_admin === true)
+  );
+
   return (
-    <header className="bg-white shadow-sm">
+    <header className={`bg-white ${scrolled ? 'shadow-md' : 'shadow-sm'} transition-all duration-200`}>
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <span className="sr-only">Rival Sports</span>
-              <Image
-                src="/images/Rivalailogo.png"
-                alt="Rival Sports Logo"
-                width={120}
-                height={60}
-                className="h-10 w-auto"
-              />
+              <div className="h-10 w-auto relative">
+                <Image
+                  src="/images/Rivalailogo.png"
+                  alt="Rival Sports Logo"
+                  width={120}
+                  height={60}
+                  className="h-10 w-auto"
+                  onError={(e) => {
+                    e.currentTarget.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'><rect width='120' height='60' fill='%234f46e5' /><text x='60' y='30' font-family='Arial' font-size='24' fill='white' text-anchor='middle' dominant-baseline='central' font-weight='bold'>RIVAL</text></svg>";
+                  }}
+                />
+              </div>
             </Link>
             <div className="hidden md:ml-10 md:block">
               <div className="flex space-x-8">
@@ -62,7 +83,7 @@ export default function Header() {
                       isActive(item.href)
                         ? 'text-indigo-600 border-b-2 border-indigo-600'
                         : 'text-gray-700 hover:text-indigo-500'
-                    } px-1 py-5 text-sm font-medium`}
+                    } px-1 py-5 text-sm font-medium transition-colors`}
                   >
                     {item.name}
                   </Link>
@@ -80,13 +101,13 @@ export default function Header() {
                   onClick={toggleUserMenu}
                   aria-expanded={userMenuOpen}
                 >
-                  <div className="flex items-center justify-center h-8 w-8 rounded-full bg-gray-200 overflow-hidden">
+                  <div className="flex items-center justify-center h-9 w-9 rounded-full bg-gray-200 overflow-hidden">
                     {profile?.avatar_url ? (
                       <Image
                         src={profile.avatar_url}
                         alt="User avatar"
-                        width={32}
-                        height={32}
+                        width={36}
+                        height={36}
                         className="h-full w-full object-cover"
                       />
                     ) : (
@@ -101,7 +122,7 @@ export default function Header() {
 
                 {userMenuOpen && (
                   <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5">
-                    {userNavigation.map((item) => (
+                    {filteredUserNav.map((item) => (
                       item.onClick ? (
                         <button
                           key={item.name}
@@ -134,7 +155,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/signup"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-sm font-medium"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Sign up
                 </Link>

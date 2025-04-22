@@ -13,4 +13,30 @@ body {
   background: rgb(var(--background-start-rgb));
 }
 
+/* Custom styles */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* Internet Explorer and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+/* Animation for vote bars */
+@keyframes vote-animate {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+.vote-bar {
+  transform-origin: left;
+  animation: vote-animate 0.5s ease-out forwards;
+}
+
+/* Sticky header shadow */
+.sticky-shadow {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
 /* Add custom styles here */ 

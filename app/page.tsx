@@ -5,7 +5,7 @@ import { cookies } from 'next/headers'
 import ArticleCard from './components/ArticleCard'
 import SportFilter from './components/SportFilter'
 
-// The number of articles to fetch per page
+// The number of articles to fetch initially
 const ARTICLES_PER_PAGE = 12
 
 // Generate dynamic sport icon URLs
@@ -80,7 +80,8 @@ export default async function Home({
           away_score,
           home_team:teams!games_home_team_id_fkey(id, name, abbreviation, logo_url),
           away_team:teams!games_away_team_id_fkey(id, name, abbreviation, logo_url)
-        )
+        ),
+        votes:article_votes(home_votes, away_votes)
       `)
       .order('published_at', { ascending: false })
       .range(from, to)
@@ -107,42 +108,45 @@ export default async function Home({
     const demoArticles = [
       {
         id: '1',
-        title: 'NBA Playoffs: Eastern Conference Finals Preview',
-        summary: 'An in-depth look at the upcoming Eastern Conference Finals matchup and key players to watch.',
+        title: 'NBA Showdown: Celtics vs Bucks in Eastern Conference Clash',
+        summary: 'Jayson Tatum and Giannis go head-to-head in a battle of Eastern Conference titans. Who has the edge tonight?',
         published_at: new Date().toISOString(),
         sport: activeSports.find(s => s.name === 'NBA') || {
           name: 'NBA',
           display_name: 'Basketball',
           icon_url: generateSportIconUrl('NBA')
         },
-        key_stat: '58.3% - Team shooting percentage in the playoffs',
-        key_prediction: 'Series will go to 7 games',
+        key_stat: 'Tatum averaging 28.7 PPG vs. Milwaukee this season',
+        key_prediction: 'High-scoring affair with 230+ combined points',
+        votes: [{ home_votes: 125, away_votes: 78 }]
       },
       {
         id: '2',
-        title: 'MLB Weekend Roundup: Top Performances',
-        summary: 'Recapping the weekend\'s biggest baseball moments and standout player performances from around the league.',
+        title: 'MLB Rivalry Week: Yankees vs Red Sox at Fenway',
+        summary: 'The most storied rivalry in baseball heats up as the Yankees bring their power bats to Fenway Park tonight.',
         published_at: new Date().toISOString(),
         sport: activeSports.find(s => s.name === 'MLB') || {
           name: 'MLB',
           display_name: 'Baseball',
           icon_url: generateSportIconUrl('MLB')
         },
-        key_stat: '4 home runs in a single game',
-        key_prediction: 'Will contend for MVP this season',
+        key_stat: 'Judge hitting .342 with 6 HR at Fenway this year',
+        key_prediction: 'Yankees to edge it with late-inning heroics',
+        votes: [{ home_votes: 203, away_votes: 187 }]
       },
       {
         id: '3',
-        title: 'NFL Draft Analysis: Winners and Losers',
-        summary: 'Breaking down which teams made the smartest moves in this year\'s NFL draft and which ones might regret their choices.',
+        title: 'NFL Sunday: Chiefs Look to Extend Win Streak Against Raiders',
+        summary: 'Patrick Mahomes and the Chiefs aim for their 6th straight win when they face their division rivals in Las Vegas.',
         published_at: new Date().toISOString(),
         sport: activeSports.find(s => s.name === 'NFL') || {
           name: 'NFL',
           display_name: 'Football',
           icon_url: generateSportIconUrl('NFL')
         },
-        key_stat: '5 first-round quarterbacks selected',
-        key_prediction: 'Draft class will produce 3+ Pro Bowlers',
+        key_stat: 'Chiefs converting 52% of 3rd downs this season',
+        key_prediction: 'Chiefs by 10+ with Mahomes throwing 3+ TDs',
+        votes: [{ home_votes: 433, away_votes: 122 }]
       }
     ]
     
@@ -157,6 +161,10 @@ export default async function Home({
           }
         };
       }
+      // Add demo votes if needed
+      if (!article.votes || article.votes.length === 0) {
+        article.votes = [{ home_votes: Math.floor(Math.random() * 500), away_votes: Math.floor(Math.random() * 500) }];
+      }
       return article;
     });
     
@@ -164,56 +172,45 @@ export default async function Home({
 
     return (
       <div className="bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-4 md:mb-0">
-              Latest Sports News & Analysis
-            </h1>
-            
+        {/* Sticky sport switcher */}
+        <div className="sticky top-0 z-10 bg-white shadow-sm border-b border-gray-200 py-2">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SportFilter 
               sports={activeSports} 
               activeSportId={sportId} 
             />
           </div>
+        </div>
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+          <div className="pb-6">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+              Game Day Insights
+            </h1>
+            <p className="mt-2 text-gray-600">
+              Fresh analysis, stats, and predictions for your favorite matchups
+            </p>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Infinite-scroll feed */}
+          <div className="flex flex-col gap-6">
             {displayArticles.map((article) => (
               <ArticleCard key={article.id} article={article} />
             ))}
           </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-10 flex justify-center">
-              <nav className="inline-flex items-center justify-center rounded-md">
-                {hasPrevPage && (
-                  <Link
-                    href={{
-                      pathname: '/',
-                      query: { ...(sportId ? { sport: sportId } : {}), page: page - 1 },
-                    }}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border rounded-l-md"
-                  >
-                    Previous
-                  </Link>
-                )}
-                
-                <span className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 border">
-                  Page {page} of {totalPages}
-                </span>
-                
-                {hasNextPage && (
-                  <Link
-                    href={{
-                      pathname: '/',
-                      query: { ...(sportId ? { sport: sportId } : {}), page: page + 1 },
-                    }}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border rounded-r-md"
-                  >
-                    Next
-                  </Link>
-                )}
-              </nav>
+          {/* Load More Button instead of pagination for infinite scroll effect */}
+          {hasNextPage && (
+            <div className="mt-8 flex justify-center">
+              <Link
+                href={{
+                  pathname: '/',
+                  query: { ...(sportId ? { sport: sportId } : {}), page: page + 1 },
+                }}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center justify-center"
+              >
+                Load More Matchups
+              </Link>
             </div>
           )}
         </div>
@@ -227,7 +224,7 @@ export default async function Home({
       <div className="bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-8">
-            Latest Sports News & Analysis
+            Game Day Insights
           </h1>
           
           <div className="text-center py-12 bg-gray-50 rounded-lg">

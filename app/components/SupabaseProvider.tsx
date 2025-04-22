@@ -7,7 +7,7 @@ import type { Database } from '../types/supabase'
 
 interface SupabaseContext {
   supabase: ReturnType<typeof createClientComponentClient<Database>>
-  serviceClient: ReturnType<typeof createClient>
+  serviceClient: ReturnType<typeof createClient<Database>>
 }
 
 const SupabaseContext = createContext<SupabaseContext | undefined>(undefined)
@@ -23,7 +23,7 @@ export function useSupabase() {
 export default function SupabaseProvider({ children }: { children: React.ReactNode }) {
   const [supabase] = useState(() => createClientComponentClient<Database>())
   const [serviceClient] = useState(() => 
-    createClient(
+    createClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )

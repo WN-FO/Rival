@@ -6,412 +6,161 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
-  public: {
+export type Database = {
+  graphql_public: {
     Tables: {
-      articles: {
-        Row: {
-          id: string
-          title: string
-          content: string
-          summary: string | null
-          key_stat: string | null
-          key_storyline: string | null
-          key_prediction: string | null
-          sport_id: number | null
-          game_id: string | null
-          published_at: string
-          created_at: string
-          updated_at: string
-          metadata: Json | null
-        }
-        Insert: {
-          id?: string
-          title: string
-          content: string
-          summary?: string | null
-          key_stat?: string | null
-          key_storyline?: string | null
-          key_prediction?: string | null
-          sport_id?: number | null
-          game_id?: string | null
-          published_at?: string
-          created_at?: string
-          updated_at?: string
-          metadata?: Json | null
-        }
-        Update: {
-          id?: string
-          title?: string
-          content?: string
-          summary?: string | null
-          key_stat?: string | null
-          key_storyline?: string | null
-          key_prediction?: string | null
-          sport_id?: number | null
-          game_id?: string | null
-          published_at?: string
-          created_at?: string
-          updated_at?: string
-          metadata?: Json | null
-        }
-      }
-      comments: {
-        Row: {
-          id: string
-          article_id: string
-          user_id: string
-          content: string
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          article_id: string
-          user_id: string
-          content: string
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          article_id?: string
-          user_id?: string
-          content?: string
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      follows: {
-        Row: {
-          id: string
-          follower_id: string
-          following_id: string
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          follower_id: string
-          following_id: string
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          follower_id?: string
-          following_id?: string
-          created_at?: string
-        }
-      }
-      games: {
-        Row: {
-          id: string
-          sport_id: number
-          home_team_id: number
-          away_team_id: number
-          start_time: string
-          lock_time: string
-          home_score: number | null
-          away_score: number | null
-          status: string
-          winner_id: number | null
-          external_id: string | null
-          created_at: string
-          updated_at: string
-          processed: boolean | null
-        }
-        Insert: {
-          id?: string
-          sport_id: number
-          home_team_id: number
-          away_team_id: number
-          start_time: string
-          lock_time: string
-          home_score?: number | null
-          away_score?: number | null
-          status?: string
-          winner_id?: number | null
-          external_id?: string | null
-          created_at?: string
-          updated_at?: string
-          processed?: boolean | null
-        }
-        Update: {
-          id?: string
-          sport_id?: number
-          home_team_id?: number
-          away_team_id?: number
-          start_time?: string
-          lock_time?: string
-          home_score?: number | null
-          away_score?: number | null
-          status?: string
-          winner_id?: number | null
-          external_id?: string | null
-          created_at?: string
-          updated_at?: string
-          processed?: boolean | null
-        }
-      }
-      notifications: {
-        Row: {
-          id: string
-          user_id: string
-          type: string
-          title: string
-          message: string
-          data: Json | null
-          seen: boolean
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          type: string
-          title: string
-          message: string
-          data?: Json | null
-          seen?: boolean
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          type?: string
-          title?: string
-          message?: string
-          data?: Json | null
-          seen?: boolean
-          created_at?: string
-        }
-      }
-      picks: {
-        Row: {
-          id: string
-          user_id: string
-          game_id: string
-          pick_team_id: number
-          correct: boolean | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          game_id: string
-          pick_team_id: number
-          correct?: boolean | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          game_id?: string
-          pick_team_id?: number
-          correct?: boolean | null
-          created_at?: string
-        }
-      }
-      sports: {
-        Row: {
-          id: number
-          name: string
-          display_name: string
-          active: boolean
-          icon_url: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: number
-          name: string
-          display_name: string
-          active?: boolean
-          icon_url?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: number
-          name?: string
-          display_name?: string
-          active?: boolean
-          icon_url?: string | null
-          created_at?: string
-        }
-      }
-      teams: {
-        Row: {
-          id: number
-          sport_id: number
-          name: string
-          abbreviation: string
-          logo_url: string | null
-          city: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: number
-          sport_id: number
-          name: string
-          abbreviation: string
-          logo_url?: string | null
-          city?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: number
-          sport_id?: number
-          name?: string
-          abbreviation?: string
-          logo_url?: string | null
-          city?: string | null
-          created_at?: string
-        }
-      }
-      users: {
-        Row: {
-          id: string
-          email: string
-          username: string | null
-          avatar_url: string | null
-          bio: string | null
-          ring: string
-          correct_picks: number
-          total_picks: number
-          hit_rate: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id: string
-          email: string
-          username?: string | null
-          avatar_url?: string | null
-          bio?: string | null
-          ring?: string
-          correct_picks?: number
-          total_picks?: number
-          hit_rate?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          email?: string
-          username?: string | null
-          avatar_url?: string | null
-          bio?: string | null
-          ring?: string
-          correct_picks?: number
-          total_picks?: number
-          hit_rate?: number
-          created_at?: string
-          updated_at?: string
-        }
-      }
+      [_ in never]: never
     }
     Views: {
-      v_friends_leaderboard: {
-        Row: {
-          id: string | null
-          username: string | null
-          avatar_url: string | null
-          ring: string | null
-          correct_picks: number | null
-          total_picks: number | null
-          hit_rate: number | null
-          follower_id: string | null
-        }
-        Insert: {
-          id?: string | null
-          username?: string | null
-          avatar_url?: string | null
-          ring?: string | null
-          correct_picks?: number | null
-          total_picks?: number | null
-          hit_rate?: number | null
-          follower_id?: string | null
-        }
-        Update: {
-          id?: string | null
-          username?: string | null
-          avatar_url?: string | null
-          ring?: string | null
-          correct_picks?: number | null
-          total_picks?: number | null
-          hit_rate?: number | null
-          follower_id?: string | null
-        }
-      }
-      v_leaderboard: {
-        Row: {
-          id: string | null
-          username: string | null
-          avatar_url: string | null
-          ring: string | null
-          correct_picks: number | null
-          total_picks: number | null
-          hit_rate: number | null
-          followers_count: number | null
-        }
-        Insert: {
-          id?: string | null
-          username?: string | null
-          avatar_url?: string | null
-          ring?: string | null
-          correct_picks?: number | null
-          total_picks?: number | null
-          hit_rate?: number | null
-          followers_count?: number | null
-        }
-        Update: {
-          id?: string | null
-          username?: string | null
-          avatar_url?: string | null
-          ring?: string | null
-          correct_picks?: number | null
-          total_picks?: number | null
-          hit_rate?: number | null
-          followers_count?: number | null
-        }
-      }
-      v_today_games: {
-        Row: {
-          id: string | null
-          sport_id: number | null
-          home_team_id: number | null
-          away_team_id: number | null
-          start_time: string | null
-          lock_time: string | null
-          home_score: number | null
-          away_score: number | null
-          status: string | null
-          winner_id: number | null
-          external_id: string | null
-          created_at: string | null
-          updated_at: string | null
-          home_team_name: string | null
-          home_team_abbr: string | null
-          home_team_logo: string | null
-          away_team_name: string | null
-          away_team_abbr: string | null
-          away_team_logo: string | null
-          sport_name: string | null
-          sport_display_name: string | null
-          sport_icon: string | null
-        }
-      }
+      [_ in never]: never
     }
     Functions: {
-      get_user_friends_rank: {
+      graphql: {
         Args: {
-          user_id: string
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
         }
-        Returns: number
-      }
-      get_user_global_rank: {
-        Args: {
-          user_id: string
-        }
-        Returns: number
+        Returns: Json
       }
     }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
-} 
+  public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DefaultSchema = Database[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof Database },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof Database },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
+  public: {
+    Enums: {},
+  },
+} as const

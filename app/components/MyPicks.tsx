@@ -128,6 +128,6 @@ const MyPicks: React.FC<MyPicksProps> = ({ picks }) => {
       })}
     </div>
   )
-}
+} 
 
 export default MyPicks 

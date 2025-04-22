@@ -15,8 +15,8 @@ import ToastProvider from './components/ToastProvider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'RivalAI - Sports Picks & Analysis',
-  description: 'AI-powered sports content and fan pick competition platform',
+  title: 'Rival Sports - Sports Picks & Analysis',
+  description: 'Sports content and fan pick competition platform',
 }
 
 export default function RootLayout({

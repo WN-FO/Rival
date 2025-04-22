@@ -135,8 +135,8 @@ export async function GET(request: NextRequest) {
             : null;
             
           if (userData) {
-            userData.isFollowing = !!followingMap[userData.id];
-            userData.isCurrentUser = userData.id === currentUser.id;
+          userData.isFollowing = !!followingMap[userData.id];
+          userData.isCurrentUser = userData.id === currentUser.id;
           }
         });
       }

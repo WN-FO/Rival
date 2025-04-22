@@ -18,7 +18,7 @@ const GameDetails: React.FC<GameDetailsProps> = ({ game }) => {
   const isScheduled = game.status === 'scheduled';
   
   const formattedGameTime = format(new Date(game.start_time), 'MMM d, h:mm a');
-
+  
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
       <div className="bg-gray-900 text-white text-sm font-semibold py-2 px-4 flex justify-between items-center">

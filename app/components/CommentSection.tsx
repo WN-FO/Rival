@@ -123,21 +123,21 @@ const CommentSection: React.FC<CommentSectionProps> = ({ articleId }) => {
       
       {/* Comment Form */}
       <form onSubmit={handleSubmit} className="mb-6">
-        <textarea
+            <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           className="w-full p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
           placeholder="Write your comment..."
-          rows={3}
-        />
-        <button
-          type="submit"
+              rows={3}
+            />
+            <button
+              type="submit"
           className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
+            >
           Post Comment
-        </button>
-      </form>
-
+            </button>
+        </form>
+      
       {/* Comments List */}
       <div className="space-y-4">
         {isLoading ? (
@@ -189,6 +189,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({ articleId }) => {
       </div>
     </div>
   )
-}
+} 
 
 export default CommentSection 

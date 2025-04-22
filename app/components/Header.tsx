@@ -43,15 +43,14 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <span className="sr-only">RivalAI</span>
+              <span className="sr-only">Rival Sports</span>
               <Image
-                src="/logo.svg"
-                alt="RivalAI Logo"
-                width={40}
-                height={40}
+                src="/images/Rivalailogo.png"
+                alt="Rival Sports Logo"
+                width={120}
+                height={60}
                 className="h-10 w-auto"
               />
-              <span className="ml-2 text-xl font-bold text-gray-900">RivalAI</span>
             </Link>
             <div className="hidden md:ml-10 md:block">
               <div className="flex space-x-8">

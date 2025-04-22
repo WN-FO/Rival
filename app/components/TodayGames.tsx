@@ -8,6 +8,14 @@ import { useAuth } from './AuthProvider'
 import { useToast } from './ToastProvider'
 import { format } from 'date-fns'
 import { CheckIcon } from './icons'
+import type { Database } from '../types/supabase'
+
+type Game = Database['public']['Tables']['games']['Row'] & {
+  sport: Database['public']['Tables']['sports']['Row'] | null
+  home_team: Database['public']['Tables']['teams']['Row']
+  away_team: Database['public']['Tables']['teams']['Row']
+  my_pick: Pick<Database['public']['Tables']['picks']['Row'], 'id' | 'pick_team_id'>[] | null
+}
 
 interface Sport {
   id: number
@@ -17,7 +25,7 @@ interface Sport {
 }
 
 interface TodayGamesProps {
-  games: any[]
+  games: Game[]
   sports: Sport[]
   highlightGameId?: string | null
 }
@@ -46,10 +54,10 @@ const TodayGames: React.FC<TodayGamesProps> = ({ games, sports, highlightGameId 
     }
     acc[startHour].push(game)
     return acc
-  }, {})
+  }, {} as Record<number, Game[]>)
   
   // Sort time slots
-  const sortedTimeSlots = Object.keys(groupedGames).sort((a, b) => parseInt(a) - parseInt(b))
+  const sortedTimeSlots = Object.keys(groupedGames).map(Number).sort((a, b) => a - b)
   
   // Handle pick submission
   const makePick = async (gameId: string, teamId: number) => {
@@ -89,7 +97,7 @@ const TodayGames: React.FC<TodayGamesProps> = ({ games, sports, highlightGameId 
   }
   
   // Helper to check if a team is picked
-  const isTeamPicked = (game: any, teamId: number) => {
+  const isTeamPicked = (game: Game, teamId: number) => {
     return game.my_pick && game.my_pick.length > 0 && game.my_pick[0].pick_team_id === teamId
   }
   
@@ -147,7 +155,7 @@ const TodayGames: React.FC<TodayGamesProps> = ({ games, sports, highlightGameId 
             {/* Games by time slot */}
             {sortedTimeSlots.map(timeSlot => {
               const gamesInSlot = groupedGames[timeSlot]
-              const startHour = parseInt(timeSlot)
+              const startHour = timeSlot
               const formattedTime = format(
                 new Date().setHours(startHour, 0, 0, 0),
                 'h:mm a'
@@ -160,7 +168,7 @@ const TodayGames: React.FC<TodayGamesProps> = ({ games, sports, highlightGameId 
                   </h3>
                   
                   <div className="grid grid-cols-1 gap-6">
-                    {gamesInSlot.map(game => {
+                    {gamesInSlot.map((game: Game) => {
                       const isHighlighted = highlightGameId === game.id
                       const isLocked = new Date(game.lock_time) <= new Date()
                       const homeTeam = game.home_team

@@ -122,7 +122,7 @@ export default async function PicksPage({
                       : 'bg-gray-100 text-gray-900'
                   }`}
                 >
-                  {availableGamesCount}
+                  {availableGamesCount ?? 0}
                 </span>
               )}
             </a>

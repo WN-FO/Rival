@@ -2,9 +2,9 @@ import React from 'react'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import TodayGames from '@/app/components/TodayGames'
-import MyPicks from '@/app/components/MyPicks'
-import PicksEmptyState from '@/app/components/PicksEmptyState'
+import TodayGames from '../components/TodayGames'
+import MyPicks from '../components/MyPicks'
+import PicksEmptyState from '../components/PicksEmptyState'
 
 export default async function PicksPage({
   searchParams,

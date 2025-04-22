@@ -6,8 +6,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { formatDistanceToNow, format } from 'date-fns'
 import ReactMarkdown from 'react-markdown'
-import GameDetails from '@/app/components/GameDetails'
-import CommentSection from '@/app/components/CommentSection'
+import GameDetails from '../../components/GameDetails'
+import CommentSection from '../../components/CommentSection'
 
 export default async function ArticlePage({ params }: { params: { id: string } }) {
   const cookieStore = cookies()

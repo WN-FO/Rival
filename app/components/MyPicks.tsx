@@ -10,7 +10,7 @@ interface MyPicksProps {
   picks: any[]
 }
 
-export default function MyPicks({ picks }: MyPicksProps) {
+const MyPicks: React.FC<MyPicksProps> = ({ picks }) => {
   return (
     <div className="space-y-6">
       {picks.map(pick => {
@@ -128,4 +128,6 @@ export default function MyPicks({ picks }: MyPicksProps) {
       })}
     </div>
   )
-} 
+}
+
+export default MyPicks 

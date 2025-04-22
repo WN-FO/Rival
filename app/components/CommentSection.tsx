@@ -8,16 +8,16 @@ import Image from 'next/image'
 import { formatDistanceToNow } from 'date-fns'
 
 interface CommentSectionProps {
-  articleId: string
+  articleId?: string
 }
 
-export default function CommentSection({ articleId }: CommentSectionProps) {
+const CommentSection: React.FC<CommentSectionProps> = ({ articleId }) => {
   const { supabase } = useSupabase()
   const { user, profile } = useAuth()
   const { showToast } = useToast()
   
   const [comments, setComments] = useState<any[]>([])
-  const [commentText, setCommentText] = useState('')
+  const [comment, setComment] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   
@@ -83,7 +83,7 @@ export default function CommentSection({ articleId }: CommentSectionProps) {
   }, [articleId, supabase, showToast])
   
   // Handle comment submission
-  const handleSubmitComment = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!user) {
@@ -91,7 +91,7 @@ export default function CommentSection({ articleId }: CommentSectionProps) {
       return
     }
     
-    if (!commentText.trim()) {
+    if (!comment.trim()) {
       showToast('error', 'Comment cannot be empty')
       return
     }
@@ -103,7 +103,7 @@ export default function CommentSection({ articleId }: CommentSectionProps) {
       .insert({
         article_id: articleId,
         user_id: user.id,
-        content: commentText.trim()
+        content: comment.trim()
       })
     
     setIsSubmitting(false)
@@ -112,56 +112,34 @@ export default function CommentSection({ articleId }: CommentSectionProps) {
       console.error('Error posting comment:', error)
       showToast('error', 'Failed to post comment')
     } else {
-      setCommentText('')
+      setComment('')
       showToast('success', 'Comment posted successfully')
     }
   }
   
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-8">Comments</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mt-6">
+      <h3 className="text-xl font-bold mb-4">Comments</h3>
       
-      {/* Comment form */}
-      {user ? (
-        <form onSubmit={handleSubmitComment} className="mb-8">
-          <div>
-            <label htmlFor="comment" className="sr-only">
-              Add your comment
-            </label>
-            <textarea
-              id="comment"
-              name="comment"
-              rows={3}
-              className="block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              placeholder="Add your comment..."
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              disabled={isSubmitting}
-            />
-          </div>
-          <div className="mt-3 flex justify-end">
-            <button
-              type="submit"
-              className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-indigo-300"
-              disabled={isSubmitting || !commentText.trim()}
-            >
-              {isSubmitting ? 'Posting...' : 'Post Comment'}
-            </button>
-          </div>
-        </form>
-      ) : (
-        <div className="bg-gray-50 rounded-md p-4 mb-8 text-center">
-          <p className="text-gray-700">
-            <a href="/login" className="text-indigo-600 font-medium hover:text-indigo-500">
-              Sign in
-            </a>{' '}
-            to leave a comment
-          </p>
-        </div>
-      )}
-      
-      {/* Comments list */}
-      <div className="space-y-6">
+      {/* Comment Form */}
+      <form onSubmit={handleSubmit} className="mb-6">
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          className="w-full p-3 border rounded-lg dark:bg-gray-700 dark:border-gray-600"
+          placeholder="Write your comment..."
+          rows={3}
+        />
+        <button
+          type="submit"
+          className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        >
+          Post Comment
+        </button>
+      </form>
+
+      {/* Comments List */}
+      <div className="space-y-4">
         {isLoading ? (
           <div className="text-center py-4">
             <p className="text-gray-500">Loading comments...</p>
@@ -211,4 +189,6 @@ export default function CommentSection({ articleId }: CommentSectionProps) {
       </div>
     </div>
   )
-} 
+}
+
+export default CommentSection 

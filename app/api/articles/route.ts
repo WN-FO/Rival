@@ -75,9 +75,9 @@ export async function GET(request: NextRequest) {
       pagination: {
         page,
         pageSize,
-        totalCount,
-        totalPages: Math.ceil(totalCount / pageSize),
-        hasMore: to < totalCount - 1
+        totalCount: totalCount || 0,
+        totalPages: Math.ceil((totalCount || 0) / pageSize),
+        hasMore: to < (totalCount || 0) - 1
       }
     });
   } catch (error) {

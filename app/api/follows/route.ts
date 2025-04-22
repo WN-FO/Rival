@@ -5,6 +5,29 @@ import { cookies } from 'next/headers';
 // Initialize Supabase URL
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
+interface UserData {
+  id: string;
+  username: string;
+  avatar_url: string | null;
+  ring: string | null;
+  isFollowing?: boolean;
+  isCurrentUser?: boolean;
+}
+
+interface FollowerData {
+  id: string;
+  created_at: string;
+  follower: UserData;
+}
+
+interface FollowingData {
+  id: string;
+  created_at: string;
+  following: UserData;
+}
+
+type FollowData = FollowerData | FollowingData;
+
 // Get followers for a user
 export async function GET(request: NextRequest) {
   try {
@@ -82,9 +105,14 @@ export async function GET(request: NextRequest) {
     
     // If the current user is authenticated, check if they follow each user in the list
     if (currentUser) {
-      const followingIds = type === 'followers'
-        ? data.map(item => item.follower.id)
-        : data.map(item => item.following.id);
+      const followingIds = (data as unknown as FollowData[]).map(item => {
+        if (type === 'followers' && 'follower' in item) {
+          return item.follower.id;
+        } else if (type === 'following' && 'following' in item) {
+          return item.following.id;
+        }
+        return null;
+      }).filter((id): id is string => id !== null);
       
       if (followingIds.length > 0) {
         const { data: followData } = await supabase
@@ -96,19 +124,32 @@ export async function GET(request: NextRequest) {
         const followingMap = (followData || []).reduce((acc, item) => {
           acc[item.following_id] = true;
           return acc;
-        }, {});
+        }, {} as Record<string, boolean>);
         
         // Add isFollowing property to each user
-        data.forEach(item => {
-          const userData = type === 'followers' ? item.follower : item.following;
-          userData.isFollowing = !!followingMap[userData.id];
-          userData.isCurrentUser = userData.id === currentUser.id;
+        (data as unknown as FollowData[]).forEach(item => {
+          const userData = type === 'followers' && 'follower' in item
+            ? item.follower
+            : type === 'following' && 'following' in item
+            ? item.following
+            : null;
+            
+          if (userData) {
+            userData.isFollowing = !!followingMap[userData.id];
+            userData.isCurrentUser = userData.id === currentUser.id;
+          }
         });
       }
     }
     
     return NextResponse.json({
-      [type]: data.map(item => type === 'followers' ? item.follower : item.following),
+      [type]: (data as unknown as FollowData[]).map(item => 
+        type === 'followers' && 'follower' in item 
+          ? item.follower 
+          : type === 'following' && 'following' in item 
+          ? item.following 
+          : null
+      ).filter((user): user is UserData => user !== null),
       type
     });
   } catch (error) {

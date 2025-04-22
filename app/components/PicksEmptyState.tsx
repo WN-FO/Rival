@@ -1,13 +1,15 @@
-import React from 'react'
-import Link from 'next/link'
+'use client';
+
+import React from 'react';
+import Link from 'next/link';
 
 interface PicksEmptyStateProps {
-  message: string
-  actionText?: string
-  actionUrl?: string
+  message: string;
+  actionText?: string;
+  actionUrl?: string;
 }
 
-export default function PicksEmptyState({ message, actionText, actionUrl }: PicksEmptyStateProps) {
+const PicksEmptyState: React.FC<PicksEmptyStateProps> = ({ message, actionText, actionUrl }) => {
   return (
     <div className="text-center py-12 px-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
       <h3 className="text-lg font-medium text-gray-900 mb-2">{message}</h3>
@@ -24,5 +26,7 @@ export default function PicksEmptyState({ message, actionText, actionUrl }: Pick
         </Link>
       )}
     </div>
-  )
-} 
+  );
+};
+
+export default PicksEmptyState; 

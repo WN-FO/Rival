@@ -4,15 +4,18 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSupabase } from './SupabaseProvider'
 import type { User } from '@supabase/supabase-js'
+import type { Database } from '../types/supabase'
+
+type Profile = Database['public']['Tables']['users']['Row']
 
 interface AuthContextType {
   user: User | null
-  profile: any | null
+  profile: Profile | null
   isLoading: boolean
   signIn: (email: string, password: string) => Promise<{ error: any }>
   signUp: (email: string, password: string, username: string) => Promise<{ error: any }>
   signOut: () => Promise<void>
-  updateProfile: (updates: Partial<any>) => Promise<{ error: any }>
+  updateProfile: (updates: Partial<Profile>) => Promise<{ error: any }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -29,7 +32,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const { supabase } = useSupabase()
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
-  const [profile, setProfile] = useState<any | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   // Listen for authentication state changes
@@ -119,7 +122,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   }
 
   // Update profile handler
-  const updateProfile = async (updates: Partial<any>) => {
+  const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) return { error: new Error('Not authenticated') }
 
     const { error } = await supabase
@@ -128,7 +131,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       .eq('id', user.id)
 
     if (!error) {
-      setProfile(prev => ({ ...prev, ...updates }))
+      setProfile((prev) => prev ? { ...prev, ...updates } : null)
     }
 
     return { error }

@@ -1,22 +1,24 @@
+'use client';
+
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { format } from 'date-fns'
 
 interface GameDetailsProps {
-  game: any
+  game: any; // Replace with proper type
 }
 
-export default function GameDetails({ game }: GameDetailsProps) {
-  const homeTeam = game.home_team
-  const awayTeam = game.away_team
-  const winner = game.winner
-  const isFinal = game.status === 'final'
-  const isLive = game.status === 'in_progress'
-  const isScheduled = game.status === 'scheduled'
+const GameDetails: React.FC<GameDetailsProps> = ({ game }) => {
+  const homeTeam = game.home_team;
+  const awayTeam = game.away_team;
+  const winner = game.winner;
+  const isFinal = game.status === 'final';
+  const isLive = game.status === 'in_progress';
+  const isScheduled = game.status === 'scheduled';
   
-  const formattedGameTime = format(new Date(game.start_time), 'MMM d, h:mm a')
-  
+  const formattedGameTime = format(new Date(game.start_time), 'MMM d, h:mm a');
+
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
       <div className="bg-gray-900 text-white text-sm font-semibold py-2 px-4 flex justify-between items-center">
@@ -110,5 +112,7 @@ export default function GameDetails({ game }: GameDetailsProps) {
         )}
       </div>
     </div>
-  )
-} 
+  );
+};
+
+export default GameDetails; 

@@ -114,7 +114,7 @@ export default async function PicksPage({
               `}
             >
               Today's Games
-              {availableGamesCount > 0 && (
+              {(availableGamesCount ?? 0) > 0 && (
                 <span
                   className={`ml-2 py-0.5 px-2 rounded-full text-xs ${
                     activeTab === 'today'

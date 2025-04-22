@@ -7,6 +7,18 @@ interface ArticleCardProps {
   article: any
 }
 
+// Function to generate a dynamic SVG based on text
+const generateSVG = (text: string, bgColor: string = '#4f46e5'): string => {
+  const initials = text
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+    .substring(0, 2);
+  
+  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="${bgColor.replace('#', '%23')}" /><text x="50" y="50" font-family="Arial" font-size="35" fill="white" text-anchor="middle" dominant-baseline="central" font-weight="bold">${initials}</text></svg>`;
+};
+
 export default function ArticleCard({ article }: ArticleCardProps) {
   const game = article.game
   const sport = article.sport
@@ -35,15 +47,16 @@ export default function ArticleCard({ article }: ArticleCardProps) {
                     width={64}
                     height={64}
                     className="object-contain"
+                    unoptimized={true}
                     onError={(e) => {
-                      // Replace with fallback if image fails to load
-                      e.currentTarget.src = '/placeholder-team.png';
+                      // Use dynamically generated SVG as fallback
+                      e.currentTarget.src = generateSVG(homeTeam.name, '#0369a1');
                     }}
                   />
                 </div>
               ) : (
-                <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full">
-                  <span className="text-gray-500 font-bold">{homeTeam.abbreviation}</span>
+                <div className="w-16 h-16 flex items-center justify-center rounded-full" 
+                     style={{ background: `url("${generateSVG(homeTeam.abbreviation, '#0369a1')}") center/cover` }}>
                 </div>
               )}
               <span className="text-2xl font-bold text-gray-700">vs</span>
@@ -55,15 +68,16 @@ export default function ArticleCard({ article }: ArticleCardProps) {
                     width={64}
                     height={64}
                     className="object-contain"
+                    unoptimized={true}
                     onError={(e) => {
-                      // Replace with fallback if image fails to load
-                      e.currentTarget.src = '/placeholder-team.png';
+                      // Use dynamically generated SVG as fallback
+                      e.currentTarget.src = generateSVG(awayTeam.name, '#0369a1');
                     }}
                   />
                 </div>
               ) : (
-                <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full">
-                  <span className="text-gray-500 font-bold">{awayTeam.abbreviation}</span>
+                <div className="w-16 h-16 flex items-center justify-center rounded-full"
+                     style={{ background: `url("${generateSVG(awayTeam.abbreviation, '#0369a1')}") center/cover` }}>
                 </div>
               )}
             </div>
@@ -79,9 +93,10 @@ export default function ArticleCard({ article }: ArticleCardProps) {
                   width={96}
                   height={96}
                   className="object-contain"
+                  unoptimized={true}
                   onError={(e) => {
-                    // Replace with fallback if image fails to load
-                    e.currentTarget.src = '/placeholder-sport.png';
+                    // Use dynamically generated SVG as fallback
+                    e.currentTarget.src = generateSVG(sport.name, '#4f46e5');
                   }}
                 />
               </div>

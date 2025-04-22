@@ -8,6 +8,23 @@ import SportFilter from './components/SportFilter'
 // The number of articles to fetch per page
 const ARTICLES_PER_PAGE = 12
 
+// Generate dynamic sport icon URLs
+const generateSportIconUrl = (sportName: string): string => {
+  const bgColors: Record<string, string> = {
+    'NBA': '#006BB6',
+    'NFL': '#013369',
+    'MLB': '#002D72',
+    'NHL': '#000000',
+    'NCAAF': '#7B0000',
+    'NCAAB': '#003399'
+  };
+  
+  const bgColor = bgColors[sportName] || '#4f46e5';
+  const initials = sportName.substring(0, 2).toUpperCase();
+  
+  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="${bgColor.replace('#', '%23')}" /><text x="50" y="50" font-family="Arial" font-size="35" fill="white" text-anchor="middle" dominant-baseline="central" font-weight="bold">${initials}</text></svg>`;
+};
+
 export default async function Home({
   searchParams,
 }: {
@@ -31,14 +48,20 @@ export default async function Home({
     .eq('active', true)
     .order('name', { ascending: true })
   
-  // If we can't fetch sports, provide some defaults
+  // If we can't fetch sports, provide some defaults with dynamically generated icons
   const defaultSports = [
-    { id: 1, name: 'NBA', display_name: 'Basketball', icon_url: '/icons/nba.svg', active: true },
-    { id: 2, name: 'NFL', display_name: 'Football', icon_url: '/icons/nfl.svg', active: true },
-    { id: 3, name: 'MLB', display_name: 'Baseball', icon_url: '/icons/mlb.svg', active: true },
+    { id: 1, name: 'NBA', display_name: 'Basketball', icon_url: generateSportIconUrl('NBA'), active: true },
+    { id: 2, name: 'NFL', display_name: 'Football', icon_url: generateSportIconUrl('NFL'), active: true },
+    { id: 3, name: 'MLB', display_name: 'Baseball', icon_url: generateSportIconUrl('MLB'), active: true },
   ]
   
-  const activeSports = sports || defaultSports
+  // If sports are fetched but don't have icons, add them
+  const sportsWithIcons = sports?.map(sport => ({
+    ...sport,
+    icon_url: sport.icon_url || generateSportIconUrl(sport.name)
+  })) || defaultSports;
+  
+  const activeSports = sportsWithIcons;
   
   try {
     // Build query for articles
@@ -80,14 +103,18 @@ export default async function Home({
     const hasNextPage = page < totalPages
     const hasPrevPage = page > 1
 
-    // Create demo articles if none are found
+    // Create demo articles if none are found, with proper icon URLs
     const demoArticles = [
       {
         id: '1',
         title: 'NBA Playoffs: Eastern Conference Finals Preview',
         summary: 'An in-depth look at the upcoming Eastern Conference Finals matchup and key players to watch.',
         published_at: new Date().toISOString(),
-        sport: activeSports.find(s => s.name === 'NBA'),
+        sport: activeSports.find(s => s.name === 'NBA') || {
+          name: 'NBA',
+          display_name: 'Basketball',
+          icon_url: generateSportIconUrl('NBA')
+        },
         key_stat: '58.3% - Team shooting percentage in the playoffs',
         key_prediction: 'Series will go to 7 games',
       },
@@ -96,7 +123,11 @@ export default async function Home({
         title: 'MLB Weekend Roundup: Top Performances',
         summary: 'Recapping the weekend\'s biggest baseball moments and standout player performances from around the league.',
         published_at: new Date().toISOString(),
-        sport: activeSports.find(s => s.name === 'MLB'),
+        sport: activeSports.find(s => s.name === 'MLB') || {
+          name: 'MLB',
+          display_name: 'Baseball',
+          icon_url: generateSportIconUrl('MLB')
+        },
         key_stat: '4 home runs in a single game',
         key_prediction: 'Will contend for MVP this season',
       },
@@ -105,13 +136,31 @@ export default async function Home({
         title: 'NFL Draft Analysis: Winners and Losers',
         summary: 'Breaking down which teams made the smartest moves in this year\'s NFL draft and which ones might regret their choices.',
         published_at: new Date().toISOString(),
-        sport: activeSports.find(s => s.name === 'NFL'),
+        sport: activeSports.find(s => s.name === 'NFL') || {
+          name: 'NFL',
+          display_name: 'Football',
+          icon_url: generateSportIconUrl('NFL')
+        },
         key_stat: '5 first-round quarterbacks selected',
         key_prediction: 'Draft class will produce 3+ Pro Bowlers',
       }
     ]
     
-    const displayArticles = (articles && articles.length > 0 && !error) ? articles : demoArticles
+    // Fix any articles with missing sport icons
+    const fixedArticles = articles?.map(article => {
+      if (article.sport && !article.sport.icon_url) {
+        return {
+          ...article,
+          sport: {
+            ...article.sport,
+            icon_url: generateSportIconUrl(article.sport.name)
+          }
+        };
+      }
+      return article;
+    });
+    
+    const displayArticles = (fixedArticles && fixedArticles.length > 0 && !error) ? fixedArticles : demoArticles
 
     return (
       <div className="bg-white">

@@ -15,6 +15,15 @@ interface SportFilterProps {
   activeSportId: string | null
 }
 
+// Generate a dynamic SVG icon for sports
+const generateSportIcon = (sportName: string, isActive: boolean = false): string => {
+  const initials = sportName.substring(0, 2).toUpperCase();
+  const bgColor = isActive ? '#4f46e5' : '#e5e7eb';
+  const textColor = isActive ? 'white' : '#4b5563';
+  
+  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="${bgColor.replace('#', '%23')}" /><text x="50" y="50" font-family="Arial" font-size="35" fill="${textColor.replace('#', '%23')}" text-anchor="middle" dominant-baseline="central" font-weight="bold">${initials}</text></svg>`;
+};
+
 export default function SportFilter({ sports, activeSportId }: SportFilterProps) {
   // Filter out inactive sports
   const activeSports = sports.filter(sport => sport.active)
@@ -50,14 +59,26 @@ export default function SportFilter({ sports, activeSportId }: SportFilterProps)
                 width={16}
                 height={16}
                 className="object-contain"
+                unoptimized={true}
                 onError={(e) => {
-                  // Replace with fallback if image fails to load
-                  e.currentTarget.style.display = 'none';
+                  // Use dynamic SVG as fallback
+                  e.currentTarget.src = generateSportIcon(
+                    sport.name, 
+                    activeSportId === sport.id.toString()
+                  );
                 }}
               />
             </div>
           ) : (
-            <span className="mr-2 text-xs font-bold">{sport.name.substring(0, 2)}</span>
+            <div 
+              className="w-4 h-4 mr-2 relative rounded-full"
+              style={{
+                background: `url("${generateSportIcon(
+                  sport.name, 
+                  activeSportId === sport.id.toString()
+                )}") center/cover`
+              }}
+            />
           )}
           {sport.display_name}
         </Link>

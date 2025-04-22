@@ -6,11 +6,7 @@ import { Suspense } from 'react'
 // Components
 import Header from './components/Header'
 import Footer from './components/Footer'
-import AuthProvider from './components/AuthProvider'
-
-// Utils
-import SupabaseProvider from './components/SupabaseProvider'
-import ToastProvider from './components/ToastProvider'
+import Providers from './components/Providers'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,19 +23,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className={`${inter.className} flex flex-col min-h-screen bg-gray-50`}>
-        <SupabaseProvider>
-          <AuthProvider>
-            <ToastProvider>
-              <Suspense fallback={<div className="h-16 bg-gray-100 animate-pulse" />}>
-                <Header />
-              </Suspense>
-              <main className="flex-grow">
-                {children}
-              </main>
-              <Footer />
-            </ToastProvider>
-          </AuthProvider>
-        </SupabaseProvider>
+        <Providers>
+          <Suspense fallback={<div className="h-16 bg-gray-100 animate-pulse" />}>
+            <Header />
+          </Suspense>
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   )

@@ -22,6 +22,7 @@ interface Sport {
   name: string
   display_name: string
   icon_url: string | null
+  active: boolean
 }
 
 interface TodayGamesProps {
@@ -40,6 +41,9 @@ const TodayGames: React.FC<TodayGamesProps> = ({ games, sports, highlightGameId 
   
   const [makingPick, setMakingPick] = useState<string | null>(null)
   const [activeSport, setActiveSport] = useState<number | null>(null)
+  
+  // Filter out inactive sports
+  const activeSports = sports.filter(sport => sport.active)
   
   // Filter games by selected sport
   const filteredGames = activeSport 
@@ -117,7 +121,7 @@ const TodayGames: React.FC<TodayGamesProps> = ({ games, sports, highlightGameId 
           >
             All Sports
           </button>
-          {sports.map((sport) => (
+          {activeSports.map((sport) => (
             <button
               key={sport.id}
               onClick={() => setActiveSport(sport.id)}

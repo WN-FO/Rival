@@ -7,6 +7,7 @@ interface Sport {
   name: string
   display_name: string
   icon_url: string | null
+  active: boolean
 }
 
 interface SportFilterProps {
@@ -15,6 +16,9 @@ interface SportFilterProps {
 }
 
 export default function SportFilter({ sports, activeSportId }: SportFilterProps) {
+  // Filter out inactive sports
+  const activeSports = sports.filter(sport => sport.active)
+
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Link
@@ -28,7 +32,7 @@ export default function SportFilter({ sports, activeSportId }: SportFilterProps)
         All Sports
       </Link>
       
-      {sports.map((sport) => (
+      {activeSports.map((sport) => (
         <Link
           key={sport.id}
           href={`/?sport=${sport.id}`}

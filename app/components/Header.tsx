@@ -22,6 +22,7 @@ export default function Header() {
   const userNavigation = [
     { name: 'Profile', href: user ? `/profile/${user.id}` : '#' },
     { name: 'Settings', href: '/settings' },
+    { name: 'Admin', href: '/admin' },
     { name: 'Sign out', onClick: signOut },
   ]
 

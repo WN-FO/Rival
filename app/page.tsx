@@ -24,10 +24,10 @@ export default async function Home({
   const from = (page - 1) * ARTICLES_PER_PAGE
   const to = from + ARTICLES_PER_PAGE - 1
   
-  // Fetch all sports for filter
+  // Fetch active sports for filter
   const { data: sports } = await supabase
     .from('sports')
-    .select('id, name, display_name, icon_url')
+    .select('id, name, display_name, icon_url, active')
     .eq('active', true)
     .order('name', { ascending: true })
   
